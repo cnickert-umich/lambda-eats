@@ -1,12 +1,19 @@
-html, body, #root {
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  height: 65%;
+}
+
+body {
   margin: 0;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
-  max-height: 100vh;
-  display: flex;
-  flex-flow: column;
 }
 
 code {

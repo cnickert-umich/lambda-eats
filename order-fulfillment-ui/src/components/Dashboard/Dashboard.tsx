@@ -27,9 +27,9 @@ function Dashboard() {
   return (
     <>
       <Header {...shopInfo as ShopDO} />
-      <MDBContainer fluid className="h-100 overflow-hidden">
-        <div className="row h-100 overflow-hidden">
-          <div className="col-md-9 h-100 overflow-auto mx-auto">
+      <MDBContainer fluid>
+        <div className="row">
+          <div className="col-md-9 mx-auto">
             <OrderTable />
           </div>
         </div>
