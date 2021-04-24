@@ -1,0 +1,371 @@
+org: cnickertumich
+app: lambda-eats
+service: serverless-backend
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
+  environment:
+    DYNAMODB_SHOP_TABLE: ${self:service}-${opt:stage, self:provider.stage}-shop
+    DYNAMODB_MENU_TABLE: ${self:service}-${opt:stage, self:provider.stage}-menu
+    DYNAMODB_FOOD_TABLE: ${self:service}-${opt:stage, self:provider.stage}-food
+    DYNAMODB_PENDING_ORDER_TABLE: ${self:service}-${opt:stage, self:provider.stage}-pending-order
+    DYNAMODB_ACTIVE_ORDER_TABLE: ${self:service}-${opt:stage, self:provider.stage}-active-order
+    DYNAMODB_WEB_SOCKET_CONNECTION_TABLE: ${self:service}-${opt:stage, self:provider.stage}-web-socket-connections
+    API_GATEWAY_ENDPOINT:
+      Fn::Join:
+        - ""
+        - - Ref: WebsocketsApi
+          - .execute-api.
+          - ${opt:region, self:provider.region}
+          - .amazonaws.com/
+          - ${opt:stage, self:provider.stage}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_SHOP_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_SHOP_TABLE}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_MENU_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_MENU_TABLE}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_FOOD_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_FOOD_TABLE}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PENDING_ORDER_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PENDING_ORDER_TABLE}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ACTIVE_ORDER_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ACTIVE_ORDER_TABLE}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_WEB_SOCKET_CONNECTION_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_WEB_SOCKET_CONNECTION_TABLE}/index/*"
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+functions:
+  generateTestShop:
+    handler: src/test-data/TestDataController.populateDatabase
+    events:
+      - http:
+          path: shops/generate-test-shop
+          method: post
+          cors: true
+
+  listAllShops:
+    handler: src/shops/list.list
+    events:
+      - http:
+          path: shops
+          method: get
+          cors: true
+
+  createShop:
+    handler: src/shops/ShopController.createShop
+    events:
+      - http:
+          path: shops
+          method: post
+          cors: true
+
+  findShopById:
+    handler: src/shops/ShopController.findShopById
+    events:
+      - http:
+          path: shops/{shopId}
+          method: get
+          cors: true
+
+  updateShop:
+    handler: src/shops/ShopController.updateShop
+    events:
+      - http:
+          path: shops/{shopId}
+          method: put
+          cors: true
+
+  listAllMenusWithDetails:
+    handler: src/menus-detailed/DetailedMenuController.listAllMenusWithDetails
+    events:
+      - http:
+          path: shops/{shopId}/menus-detailed
+          method: get
+          cors: true
+
+  createMenu:
+    handler: src/menus/MenuController.createMenu
+    events:
+      - http:
+          path: shops/{shopId}/menus
+          method: post
+          cors: true
+
+  listAllMenus:
+    handler: src/menus/MenuController.listAllMenus
+    events:
+      - http:
+          path: shops/{shopId}/menus
+          method: get
+          cors: true
+
+  findMenuByShopIdAndMenuId:
+    handler: src/menus/MenuController.findMenuByShopIdAndMenuId
+    events:
+      - http:
+          path: shops/{shopId}/menus/{menuId}
+          method: get
+          cors: true
+
+  updateMenu:
+    handler: src/menus/MenuController.updateMenu
+    events:
+      - http:
+          path: shops/{shopId}/menus/{menuId}
+          method: put
+          cors: true
+
+  createFood:
+    handler: src/food/FoodController.createFood
+    events:
+      - http:
+          path: shops/{shopId}/food
+          method: post
+          cors: true
+
+  listAllFood:
+    handler: src/food/FoodController.listAllFood
+    events:
+      - http:
+          path: shops/{shopId}/food
+          method: get
+          cors: true
+
+  findFoodByShopIdAndFoodId:
+    handler: src/food/FoodController.findFoodByShopIdAndFoodId
+    events:
+      - http:
+          path: shops/{shopId}/food/{foodId}
+          method: get
+          cors: true
+
+  listAllFoodForMenu:
+    handler: src/food/FoodController.listAllFoodForMenu
+    events:
+      - http:
+          path: shops/{shopId}/menus/{menuId}/food
+          method: get
+          cors: true
+
+  updateFood:
+    handler: src/food/FoodController.updateFood
+    events:
+      - http:
+          path: shops/{shopId}/food/{foodId}
+          method: put
+          cors: true
+
+  checkout:
+    handler: src/checkout/CheckoutController.beginCheckout
+    events:
+      - http:
+          path: shops/{shopId}/checkout
+          method: post
+          cors: true
+
+  checkoutSessionCompleted:
+    handler: src/stripe/StripeWebhookController.checkoutSessionCompleted
+    events:
+      - http:
+          path: checkoutSessionCompleted
+          method: post
+          cors: true
+
+  listActiveOrders:
+    handler: src/orders/active/ActiveOrderController.listActiveOrders
+    events:
+      - http:
+          path: shops/{shopId}/orders
+          method: get
+          cors: true
+
+  archiveOrder:
+    handler: src/orders/archived/ArchiveOrderController.archiveOrder
+    events:
+      - http:
+          path: shops/{shopId}/orders/{orderId}
+          method: delete
+          cors: true
+
+  webSocketConnect:
+    handler: src/web-sockets/WebSocketConnectionController.connect
+    events:
+      - websocket:
+          route: $connect
+  webSocketDisonnect:
+    handler: src/web-sockets/WebSocketConnectionController.disconnect
+    events:
+      - websocket:
+          route: $disconnect
+
+  webSocketBroadcaster:
+    handler: src/web-sockets/WebSocketBroadcaster.send
+
+resources:
+  Resources:
+    ShopsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_SHOP_TABLE}
+    MenusDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: shopId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: shopId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: ShopIdIndex
+            KeySchema:
+              - AttributeName: shopId
+                KeyType: HASH
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_MENU_TABLE}
+    FoodDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: shopId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: shopId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: ShopIdIndex
+            KeySchema:
+              - AttributeName: shopId
+                KeyType: HASH
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_FOOD_TABLE}
+
+    PendingOrdersDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: shopId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: shopId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: ShopIdIndex
+            KeySchema:
+              - AttributeName: shopId
+                KeyType: HASH
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_PENDING_ORDER_TABLE}
+
+    ActiveOrdersDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: shopId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: shopId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: ShopIdIndex
+            KeySchema:
+              - AttributeName: shopId
+                KeyType: HASH
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_ACTIVE_ORDER_TABLE}
+
+    WebSocketConnectionsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: shopId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: ShopIdIndex
+            KeySchema:
+              - AttributeName: shopId
+                KeyType: HASH
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_WEB_SOCKET_CONNECTION_TABLE}
