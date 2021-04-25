@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "a60cbf29-3dad-4be5-91b3-cd507621ad60",
+		"name": "LambdaEats",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Shop",
+			"item": [
+				{
+					"name": "create new shop",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"if (jsonData.id) {\r",
+									"    postman.setEnvironmentVariable(\"shop_id\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"website\": \"https://bangkok96.com\",\r\n    \"accountId\": \"acct_1IZMnwFNEF9eKigW\",\r\n    \"waitTime\": 2265638,\r\n    \"address\": \"9126 Telegraph Rd, Dearborn MI, 90620\",\r\n    \"email\": \"bangkok96restaurant@gmail.com\",\r\n    \"phone\": \"+1 (313) 730-8161\",\r\n    \"name\": \"Bangkok 80 Restaurant\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update shop",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"website\": \"https://bangkok96.com\",\r\n    \"accountId\": \"acct_1IZMnwFNEF9eKigW\",\r\n    \"waitTime\": 2265638,\r\n    \"address\": \"9126 Telegraph Rd, Dearborn MI, 90620\",\r\n    \"email\": \"bangkok96restaurant@gmail.com\",\r\n    \"phone\": \"+1 (313) 730-8161\",\r\n    \"name\": \"Bangkok 80 Restaurant\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get shop",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all shops",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all shop menus with details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/menus-detailed",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"menus-detailed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all shop menus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/menus",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"menus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all food at shop",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/food",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"food"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generate 5 more test shops",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"if (jsonData[\"shopId\"]) {\r",
+									"    postman.setEnvironmentVariable(\"shop_id\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/generate-test-shop",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"generate-test-shop"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Menu",
+			"item": [
+				{
+					"name": "create menu",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"if (jsonData.id) {\r",
+									"    postman.setEnvironmentVariable(\"menu_id\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"foodIds\": [],\r\n    \"description\": \"Compliments your meal.\",\r\n    \"title\": \"Appetizers\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/menus",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"menus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update menu",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"foodIds\": [\r\n        \"6b214b90-a546-11eb-8f1c-2980d3907e7e\",\r\n        \"6b2458d0-a546-11eb-8f1c-2980d3907e7e\"\r\n    ],\r\n    \"description\": \"Compliments your meal.\",\r\n    \"title\": \"Appetizers\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/menus/{{menu_id}}",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"menus",
+								"{{menu_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get menu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/menus/{{menu_id}}",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"menus",
+								"{{menu_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all food in menu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/menus/{{menu_id}}/food",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"menus",
+								"{{menu_id}}",
+								"food"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Food",
+			"item": [
+				{
+					"name": "create food",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"if (jsonData.id) {\r",
+									"    postman.setEnvironmentVariable(\"food_id\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cost\": 1123,\r\n    \"description\": \"Chilli paste cream cheese with crab meat wrapped in wonton skins. Served with sweet & sour sauce.\",\r\n    \"title\": \"Mild Spicy Crab Wontons (5 PCS) with noodles\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/food",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"food"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update food",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cost\": 1123,\r\n    \"description\": \"Chilli paste cream cheese with crab meat wrapped in wonton skins. Served with sweet & sour sauce.\",\r\n    \"title\": \"Mild Spicy Crab Wontons (5 PCS) with noodles\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/food/{{food_id}}",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"food",
+								"{{food_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get food",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/food/{{food_id}}",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"food",
+								"{{food_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "checkout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"customer\":{\r\n      \"customerName\":\"Cameron Nickert\",\r\n      \"customerPhone\":\"5555555555\",\r\n      \"customerEmail\":\"cnickert@umich.edu\"\r\n   },\r\n   \"cart\":[\r\n      {\r\n         \"menuId\":\"{{menu_id}}\",\r\n         \"foodId\":\"{{food_id}}\"\r\n      }\r\n   ],\r\n   \"redirectUrl\":\"http://localhost:8081/{{shop_id}}\",\r\n   \"tipAmount\": 200\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/checkout",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get active orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/orders",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "archive active order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/orders/{{order_id}}",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"orders",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "For Stripe only",
+			"item": [
+				{
+					"name": "stripe payment notification webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Stripe-Signature",
+								"value": "signature t=1619375070,v1=c5de51589eb8eca560dfef34608a11d81b86506ab36dc4d6ebfabdc3d808e3d7,v0=372bc9f99de0a870e60c0b9e8cee2316bd012b72609a1076accf3c2343644170",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{lambda_eats_url}}/shops/{{shop_id}}/checkoutSessionCompleted",
+							"host": [
+								"{{lambda_eats_url}}"
+							],
+							"path": [
+								"shops",
+								"{{shop_id}}",
+								"checkoutSessionCompleted"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
