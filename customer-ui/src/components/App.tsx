@@ -4,8 +4,9 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { CartProvider } from '../contexts/useCartContext';
 import React from "react";
 import ShopFront from "./shop/ShopFront";
-import AdminPage from "./admin/AdminPage";
+import AdminPage from "./browse/BrowsePage";
 import Footer from "./footer/Footer";
+import BrowsePage from "./browse/BrowsePage";
 
 export default function App() {
   return (
@@ -14,8 +15,7 @@ export default function App() {
         <Switch>
 
           <Route exact path="/">
-            <h1>Not Found</h1>
-            <p>A shop id must be specified in the URL path. If you are a software admin, login to the admin page <Link to="admin">here</Link></p>
+            <BrowsePage />
           </Route>
 
           <Route exact path="/admin">

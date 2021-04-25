@@ -1,7 +1,6 @@
 import { MDBBtn } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Loading from "../loading/Loading";
 import logo from "../footer/LambdaEatsLogo.png";
 
 export default function AdminPage() {
@@ -64,7 +63,9 @@ export default function AdminPage() {
             <hr />
             <p>You can either use this page to generate test data or use the suite of API endpoints.</p>
             {loading ? <div className="w-100 d-flex mt-5 pt-5">
-                <Loading />
+                <div className="spinner-border mx-auto" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
             </div> : <>
                 <div className="mt-3">
                     <MDBBtn className="mb-3" onClick={generateTestData}><i className="fas fa-cogs me-2"></i>Generate More Test Data</MDBBtn>
@@ -74,7 +75,7 @@ export default function AdminPage() {
                 <div className="card py-3 bg-dark mt-3">
                     {list != undefined && list.length > 0 ?
                         <>
-                            <h2 className="text-white">Visit Existing Shop Pages</h2>
+                            <h2 className="text-white">Order Fulfilment Pages</h2>
                             {list.map((shop) => {
                                 return <div className="m-2"><Link to={shop.id} target="_blank"><MDBBtn color="light"><i className="fas fa-external-link-alt me-2"></i><strong>{shop.name}</strong><br /><span className="small">{shop.id}</span></MDBBtn></Link></div>
                             })}

@@ -5,6 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import AdminPage from "./admin/AdminPage";
 import "./App.css";
 import Dashboard from "./Dashboard/Dashboard";
 import Footer from "./footer/Footer";
@@ -24,7 +25,7 @@ function App() {
           </Route>
 
           <Route exact path="/admin">
-            <p>Admin Page</p>
+            <AdminPage/>
           </Route>
 
           {/* <Route exact path="/:shopId/checkout/">
