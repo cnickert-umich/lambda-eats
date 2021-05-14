@@ -1,6 +1,9 @@
 # lambda-eats
 This project is a SaaS online ordering system. It scales by taking advantage of [AWS Lambda](https://aws.amazon.com/lambda/). The system allows independent shops to sell food through a dedicated React webpage.
 
+## Notice
+This project is currently in a partial working state. The Stripe credentials have been expired for security purposes. Therefore, a shop customer cannot complete a payment and an order cannot be created.
+
 The project mainly consists of the TypeScript language throughout the whole stack.
 
 The project consists of three main folders:
